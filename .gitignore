@@ -1,0 +1,8 @@
+.DS_Store
+maxmu_log/.DS_Store
+maxmu_log/Thumbs.db
+maxmu_log/db.json
+maxmu_log/*.log
+maxmu_log/node_modules/
+maxmu_log/public/
+maxmu_log/.deploy*/
