@@ -359,15 +359,53 @@ height:50vh;
     
     
     <article class="index-post">
-        <a class="abstract-title" href="/2019/04/20/Effective-Java-4 类和接口/">
+        <a class="abstract-title" href="/2019/04/21/Effective-Java-5-泛型/">
             
-                <span>Effective Java 4</span>
+                <span>Effective-Java-5-泛型</span>
         </a>
         <div class="abstract-content">
-            Effective-Java 4 类和接口类和接口是JAVA的基本抽象单元。利用这些核心元素需要设计出更加有用、健壮和灵活的类和接口。
+            声明中具有一个或者多个类型参数（type parameter）的类或者接口称为泛型（generic）类或者接口。泛型类和接口统称泛型。
+26. 请不要使用原生态类型泛型是指定义一组参数化的类型：Class / Interface &lt;parameterized type&gt;。
+原生态类型：List，泛型参数化：List&lt;E&gt;。
+
+Java中原生态类型是为了旧版本JAVA的兼容性；
+使用原生态则会丢失泛型在安全性和描述性方面的优势（编译期间可以提前发现错误）。
+
+12345678910//Fails at runtime - ClassCastExceptionpubl...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/04/21</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class="abstract-tags">
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="Java">Java</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href="/2019/04/20/Effective-Java-4 类和接口/">
+            
+                <span>Effective-Java-4-类和接口</span>
+        </a>
+        <div class="abstract-content">
+            类和接口是JAVA的基本抽象单元。利用这些核心元素需要设计出更加有用、健壮和灵活的类和接口。
 15. 使类和成员的可访问性最小化16. 要在公有类而非公有域中使用访问方法17. 使可变性最小化18. 复合优于继承19. 要么设计继承并提供文档说明，要么禁止继承20. 接口优于抽象类21. 为后代设计接口22. 接口只用于定义类型23. 类层次优于标签类24. 静态成员类优于非静态成员类25. 限制源文件为单个顶级类永远不要把多个顶级类或者接口放在一个源文件中。在一个文件里只能定义一个顶级类，如果定义多个，会产生编译问题。
 
-一个文件多个类的做法可...
+一个文件多个类的做法可以使用静态成员类
+
+
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -648,9 +686,16 @@ property...
     
     
     
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 4
+        Total : 5
         </div>
         <!-- search  -->
         
@@ -666,12 +711,17 @@ property...
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">04/20</span><a class="archive-post-title" href="/2019/04/20/Effective-Java-4 类和接口/">Effective Java 4</a>
+            <span class="archive-post-date">04/21</span><a class="archive-post-title" href="/2019/04/21/Effective-Java-5-泛型/">Effective-Java-5-泛型</a>
         </li>
     
     
         <li class="archive-post-item">
             <span class="archive-post-date">04/20</span><a class="archive-post-title" href="/2019/04/20/Effective-Java-1/">Effective Java 1</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/20</span><a class="archive-post-title" href="/2019/04/20/Effective-Java-4 类和接口/">Effective-Java-4-类和接口</a>
         </li>
     
     
