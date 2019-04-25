@@ -411,6 +411,27 @@ height:50vh;
 <h3 id="27-消除非受检的警告"><a href="#27-消除非受检的警告" class="headerlink" title="27. 消除非受检的警告"></a>27. 消除非受检的警告</h3><p>编译器警告：非受检转化警告（unchecked cast warning）、非受检方法调用警告、非受检参数类型警告（unchecked parameterized vararg type warning），非受检转换警告（unchecked conversion warning）。</p>
 <p>使用<code>@SuppressWarnings (&quot;unchecked&quot;)</code>注解可以消除警告，但是<strong>一定要保证代码时类型安全的，并且添加注释加以说明</strong>，并且要保证生效范围越小越好，这样才能尽最大可能消除<code>ClassCastException</code>隐患。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Adding local variable to reduce scope of @SuppressWarnings</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; T[] toArray(T[] a) &#123;</span><br><span class="line">	<span class="keyword">if</span> (a.length &lt; size) &#123;</span><br><span class="line">		<span class="comment">//This cast is correct because the array we are creating is of the same type as the one passed in, which is T[].</span></span><br><span class="line">		<span class="meta">@SuppressWarning</span>(<span class="string">"unchecked"</span>) T[] result =(T[])Arrays.copyOf(elements, size, a.getClass());</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">	System.arraycopy(elements, <span class="number">0</span>, a, <span class="number">0</span>, size);</span><br><span class="line">	<span class="keyword">if</span> (a.length &gt; size) &#123;</span><br><span class="line">		a[size] = <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="28-列表优于数组"><a href="#28-列表优于数组" class="headerlink" title="28.列表优于数组"></a>28.列表优于数组</h3><p>数组：<code>E[]</code></p>
+<p>列表：<code>List&lt;E&gt;</code></p>
+<p>数组和列表有截然不同的类型规则。</p>
+<h4 id="数组是协变的（covariant），具体化的（invariant）。"><a href="#数组是协变的（covariant），具体化的（invariant）。" class="headerlink" title="数组是协变的（covariant），具体化的（invariant）。"></a>数组是<strong>协变的（covariant）</strong>，<strong>具体化的（invariant）</strong>。</h4><blockquote>
+<p>如果Sub为Super子类，Sub[]就是Super[]的子类型。在运行时加强元素类型</p>
+</blockquote>
+<h4 id="列表是不可变的（refied），不可具体化的（nonreifiable）。"><a href="#列表是不可变的（refied），不可具体化的（nonreifiable）。" class="headerlink" title="列表是不可变的（refied），不可具体化的（nonreifiable）。"></a>列表是<strong>不可变的（refied）</strong>，<strong>不可具体化的（nonreifiable）</strong>。</h4><blockquote>
+<p>List<type1>和List<type2>没有关联（Type1 Type2是任意两个类型）。在运行时执行擦除（erasure）元素类型，但是在编译时强化类型概念。</type2></type1></p>
+</blockquote>
+<p>擦除类型后使得泛型与没有使用泛型的代码随意调用以打到Java版本兼容的目的。也就是说运行时包含的信息比它的编译时的表示信息更少！！（无限制通配符除外）</p>
+<h4 id="创建泛型、参数化类型或者类型参数的数组是非法的！！"><a href="#创建泛型、参数化类型或者类型参数的数组是非法的！！" class="headerlink" title="创建泛型、参数化类型或者类型参数的数组是非法的！！"></a>创建泛型、参数化类型或者类型参数的数组是非法的！！</h4><blockquote>
+<p>`new List<t>[]，new List<string>[] 和 T[]</string></t></p>
+</blockquote>
+<h4 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//	Chooser - a class badly in need of generics!</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Chooser</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Object[] array;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Chooser</span><span class="params">(Collection ch)</span> </span>&#123;</span><br><span class="line">		array = ch.toArray();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">choose</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Random rnd = ThreadLocalRandom.current();</span><br><span class="line">		<span class="keyword">return</span> array[rnd.nextInt(array.length)];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>利用泛型列表替换：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//	List-based Chooser - typesafe</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Chooser</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> List&lt;T&gt; list;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Chooser</span><span class="params">(Collection&lt;T&gt; ch)</span> </span>&#123;</span><br><span class="line">		list = <span class="keyword">new</span> ArrayList&lt;&gt;(ch);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> T <span class="title">choose</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Random rnd = ThreadLocalRandom.current();</span><br><span class="line">		<span class="keyword">return</span> list.get(rnd.nextInt(list.size()));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然使用列表会损失性能和简洁性，但换来了更高的类型安全性和互用性。但是要注意不要混合使用！！</p>
+<h3 id="29-优先考虑泛型"><a href="#29-优先考虑泛型" class="headerlink" title="29.优先考虑泛型"></a>29.优先考虑泛型</h3><blockquote>
+<p>只要时间允许，建议将现有的类型泛型化，对于新用户来说会变得更加轻松，也不会破幻现有的逻辑。已有的类加上泛型使之能够参数化，要注意过程。</p>
+</blockquote>
+
     </article>
     <!-- license  -->
     
@@ -521,7 +542,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#26-请不要使用原生态类型"><span class="toc-number">1.</span> <span class="toc-text">26. 请不要使用原生态类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#例外"><span class="toc-number">1.1.</span> <span class="toc-text">例外</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-必须在类文字中使用原生态类型"><span class="toc-number">1.1.1.</span> <span class="toc-text">1. 必须在类文字中使用原生态类型</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-instanceof判断操作符中"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. instanceof判断操作符中</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#27-消除非受检的警告"><span class="toc-number">2.</span> <span class="toc-text">27. 消除非受检的警告</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#26-请不要使用原生态类型"><span class="toc-number">1.</span> <span class="toc-text">26. 请不要使用原生态类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#例外"><span class="toc-number">1.1.</span> <span class="toc-text">例外</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-必须在类文字中使用原生态类型"><span class="toc-number">1.1.1.</span> <span class="toc-text">1. 必须在类文字中使用原生态类型</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-instanceof判断操作符中"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. instanceof判断操作符中</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#27-消除非受检的警告"><span class="toc-number">2.</span> <span class="toc-text">27. 消除非受检的警告</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#28-列表优于数组"><span class="toc-number">3.</span> <span class="toc-text">28.列表优于数组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数组是协变的（covariant），具体化的（invariant）。"><span class="toc-number">3.1.</span> <span class="toc-text">数组是协变的（covariant），具体化的（invariant）。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#列表是不可变的（refied），不可具体化的（nonreifiable）。"><span class="toc-number">3.2.</span> <span class="toc-text">列表是不可变的（refied），不可具体化的（nonreifiable）。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建泛型、参数化类型或者类型参数的数组是非法的！！"><span class="toc-number">3.3.</span> <span class="toc-text">创建泛型、参数化类型或者类型参数的数组是非法的！！</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#示例："><span class="toc-number">3.4.</span> <span class="toc-text">示例：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#29-优先考虑泛型"><span class="toc-number">4.</span> <span class="toc-text">29.优先考虑泛型</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -534,6 +555,8 @@ top:50vh;
     <div class="sidebar-content sidebar-content-show-archive">
           <div class="sidebar-panel-archives">
     <!-- 在ejs中将archive按照时间排序 -->
+    
+    
     
     
     
@@ -631,6 +654,8 @@ top:50vh;
     <div class="sidebar-tags-name">
     
         <span class="sidebar-tag-name" data-tags="Java"><span class="iconfont-archer">&#xe606;</span>Java</span>
+    
+        <span class="sidebar-tag-name" data-tags="Android"><span class="iconfont-archer">&#xe606;</span>Android</span>
     
         <span class="sidebar-tag-name" data-tags="iOS面试题"><span class="iconfont-archer">&#xe606;</span>iOS面试题</span>
     
